@@ -7,9 +7,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
 
   if (code) {
-    // FIX: We must await cookies() in newer Next.js versions
     const cookieStore = await cookies()
-    
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -27,8 +25,15 @@ export async function GET(request: Request) {
         },
       }
     )
-    await supabase.auth.exchangeCodeForSession(code)
+    
+    // This part converts the temporary code into a permanent session
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    
+    if (!error) {
+      return NextResponse.redirect(`${origin}/dashboard`)
+    }
   }
 
-  return NextResponse.redirect(`${origin}/dashboard`)
+  // If there's an error, send them home
+  return NextResponse.redirect(`${origin}/`)
 }
