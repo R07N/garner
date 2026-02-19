@@ -3,7 +3,7 @@
 Garner is a high-performance, full-stack web application designed for seamless bookmark management. Built with Next.js 16 and Supabase, it features secure Google OAuth authentication and a responsive dashboard for managing your digital favorites.
 
 🚀 Live Demo
-View the Production Site
+[Live Production Site](https://garner-h677-b9r1thun6-rajarshees-projects.vercel.app/)
 
 🛠️ Tech Stack
 Framework: Next.js 16 (App Router & Turbopack)
