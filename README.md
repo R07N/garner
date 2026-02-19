@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🔖 Garner: Collect Your Favorites with Ease
+Garner is a high-performance, full-stack web application designed for seamless bookmark management. Built with Next.js 16 and Supabase, it features secure Google OAuth authentication and a responsive dashboard for managing your digital favorites.
 
-## Getting Started
+🚀 Live Demo
+View the Production Site
 
-First, run the development server:
+🛠️ Tech Stack
+Framework: Next.js 16 (App Router & Turbopack)
 
-```bash
+Authentication: Supabase SSR with Google OAuth
+
+Database: Supabase PostgreSQL
+
+Styling: Bootstrap 5
+
+Deployment: Vercel (Continuous Integration/Continuous Deployment)
+
+⚙️ Project Setup & Deployment
+To deploy this project yourself, follow these steps:
+
+1. Environment Variables
+   Create a .env.local file in the root directory and add your Supabase credentials:
+
+Code snippet
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key 2. Supabase Configuration
+Site URL: Set to https://your-app.vercel.app in Authentication > URL Configuration.
+
+Redirect URIs: Add https://your-app.vercel.app/callback to the allow-list.
+
+3. Google OAuth Setup
+   In Google Cloud Console, add your Supabase callback URL to the Authorized Redirect URIs: https://<project-id>.supabase.co/auth/v1/callback.
+
+🏗️ Local Development
+Bash
+
+# Install dependencies
+
+npm install
+
+# Run the development server
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 to see the result.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+📓 Challange log
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Challenge 1: Git Repository Integrity and Large File Management
+Problem: The deployment process was initially obstructed by a bloated repository containing local build artifacts and cache directories, which exceeded GitHub’s file size constraints.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Resolution: I conducted a manual audit of the repository, surgically removing non-essential directories such as .next, node_modules, and local cache files. I then implemented a rigorous .gitignore file to ensure only source code was tracked.
 
-## Learn More
+Insight: Maintaining a lean repository is critical for CI/CD efficiency; automated deployment pipelines depend on the exclusion of environment-specific build artifacts.
 
-To learn more about Next.js, take a look at the following resources:
+Challenge 2: Cross-Origin Authentication and Production Redirects
+Problem: Authentication handshakes were failing in the production environment because the system was defaulting to localhost even when accessed via the Vercel domain.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Resolution: I refactored the authentication logic to utilize dynamic origin detection through ${window.location.origin}. Furthermore, I synchronized the Supabase Site URL and Google OAuth Redirect URIs to prioritize the https://garner-seven.vercel.app production endpoint.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Insight: Production environments require strict alignment between the application's internal redirect logic and the security configurations of external Identity Providers (IdPs).
 
-## Deploy on Vercel
+Challenge 3: State Management in Next.js 16 Server Components
+Problem: Following a successful OAuth callback, users were incorrectly redirected to the login screen because the server-side middleware failed to recognize the newly created session cookie.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Resolution: I updated the app/callback/route.ts to utilize the asynchronous await cookies() pattern required by the Next.js 16 runtime. This ensured that the session was fully persisted before the final redirect to the dashboard occurred.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Insight: Adopting modern framework patterns is essential for session persistence and ensuring that middleware correctly intercepts and validates secure routes.
